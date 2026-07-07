@@ -6,6 +6,7 @@
 <meta name="theme-color" content="#FF6B35">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.json">
 <title>SOSO - 燃脂瘦身</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&family=Plus+Jakarta+Sans:wght@700;800;900&display=swap" rel="stylesheet">
@@ -686,6 +687,16 @@ function updateModeBadge(){
 function updateDate(){
   const n=new Date();const ops={month:'long',day:'numeric',weekday:'short'};
   const el=document.getElementById('headerDate');if(el)el.textContent=n.toLocaleDateString('zh-CN',ops)
+}
+</script>
+<script>
+// PWA: Register Service Worker
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('sw.js').catch(function(err) {
+      console.log('SW reg failed:', err);
+    });
+  });
 }
 </script>
 </body>
