@@ -1,21 +1,8 @@
 const CACHE_NAME = 'soso-cache-v1';
 const ASSETS = [
-  '/',
-  '/index.html',
-  '/css/style.css',
-  '/js/app.js',
-  '/js/db.js',
-  '/js/plan.js',
-  '/js/notification.js',
-  '/js/data.js',
-  '/pages/home.html',
-  '/pages/diet.html',
-  '/pages/exercise.html',
-  '/pages/sleep.html',
-  '/pages/stats.html',
-  '/pages/profile.html',
-  '/pages/knowledge.html',
-  '/pages/welcome.html'
+  '',
+  'index.html',
+  'manifest.json'
 ];
 
 self.addEventListener('install', e => {
