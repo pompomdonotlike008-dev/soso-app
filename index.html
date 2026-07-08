@@ -214,6 +214,8 @@ html,body{height:100%;width:100%;font-family:'Noto Sans SC',sans-serif;backgroun
 </head>
 <body>
 <div id="app">
+<!-- Offline Banner -->
+<div id="offlineBanner" style="display:none;background:rgba(255,107,53,.12);color:var(--orange);text-align:center;padding:6px 16px;font-size:12px;font-weight:500;position:relative;z-index:20;">📡 离线模式 · 已缓存内容可用</div>
 
 <!-- HEADER -->
 <header class="header">
@@ -255,18 +257,27 @@ const REMINDERS=[
   {id:'exercise',time:'20:00',title:'🏃 运动时间',body:'该运动了！'},{id:'sleep',time:'22:30',title:'😴 准备睡觉',body:'23点前入睡最佳'}
 ];
 const EXERCISE={cardio:[{name:'快走',intensity:'低',calPerHour:250},{name:'慢跑',intensity:'中',calPerHour:450},{name:'游泳',intensity:'中',calPerHour:500},{name:'骑自行车',intensity:'中',calPerHour:400},{name:'跳绳',intensity:'高',calPerHour:600},{name:'健身操',intensity:'中',calPerHour:350}],strength:[{name:'深蹲',sets:3,reps:15,nore:'臀腿燃脂'},{name:'平板支撑',sets:3,reps:'30秒',note:'核心力量'},{name:'弓步蹲',sets:3,reps:12,nore:'腿部塑形'},{name:'俯卧撑',sets:3,reps:10,nore:'上肢力量'},{name:'臀桥',sets:3,reps:15,nore:'改善久坐'}]};
-const FOOD_DB={breakfast:[{name:'燕麦粥(300ml)',cal:120},{name:'全麦面包2片',cal:160},{name:'水煮蛋1个',cal:70},{name:'无糖豆浆250ml',cal:35},{name:'脱脂牛奶250ml',cal:90},{name:'玉米1根',cal:110}],lunch:[{name:'杂粮饭小碗',cal:150},{name:'清蒸鱼150g',cal:150},{name:'鸡胸肉100g',cal:140},{name:'西兰花200g',cal:70},{name:'菠菜200g',cal:50},{name:'番茄炒蛋少油',cal:120},{name:'豆腐150g',cal:110},{name:'虾仁100g',cal:95}],dinner:[{name:'小米粥300ml',cal:90},{name:'蒸南瓜200g',cal:45},{name:'白灼虾100g',cal:95},{name:'清炒时蔬200g',cal:60},{name:'蒸蛋羹',cal:80},{name:'菌菇汤',cal:35},{name:'黄瓜炒鸡丁',cal:130},{name:'清蒸豆腐150g',cal:90}]};
+const FOOD_DB={breakfast:[{name:'燕麦粥(300ml)',cal:120},{name:'全麦面包2片',cal:160},{name:'水煮蛋1个',cal:70},{name:'无糖豆浆250ml',cal:35},{name:'脱脂牛奶250ml',cal:90},{name:'玉米1根',cal:110},{name:'红薯1个(150g)',cal:135},{name:'荞麦面(熟200g)',cal:140},{name:'豆腐脑(不加辣)',cal:50},{name:'蒸山药150g',cal:115},{name:'全麦馒头1个',cal:130},{name:'煮玉米1根',cal:110},{name:'紫薯1个',cal:100},{name:'原味酸奶150g',cal:85},{name:'南瓜粥300ml',cal:65}],lunch:[{name:'杂粮饭小碗',cal:150},{name:'清蒸鱼150g',cal:150},{name:'鸡胸肉100g',cal:140},{name:'西兰花200g',cal:70},{name:'菠菜200g',cal:50},{name:'番茄炒蛋少油',cal:120},{name:'豆腐150g',cal:110},{name:'虾仁100g',cal:95},{name:'牛肉(瘦)100g',cal:130},{name:'芦笋150g',cal:35},{name:'香菇油菜200g',cal:55},{name:'糙米饭100g',cal:120},{name:'苦瓜炒蛋',cal:95},{name:'凉拌木耳150g',cal:45},{name:'蒸茄子200g',cal:40},{name:'彩椒鸡丁',cal:140},{name:'海带汤',cal:25},{name:'清炒豆芽200g',cal:50},{name:'秋葵150g',cal:45}],dinner:[{name:'小米粥300ml',cal:90},{name:'蒸南瓜200g',cal:45},{name:'白灼虾100g',cal:95},{name:'清炒时蔬200g',cal:60},{name:'蒸蛋羹',cal:80},{name:'菌菇汤',cal:35},{name:'黄瓜炒鸡丁',cal:130},{name:'清蒸豆腐150g',cal:90},{name:'番茄龙利鱼',cal:120},{name:'冬瓜汤300ml',cal:30},{name:'凉拌黄瓜',cal:35},{name:'蒸鲈鱼100g',cal:110},{name:'娃娃菜粉丝(少油)',cal:65},{name:'紫菜蛋花汤',cal:40},{name:'蒜蓉西兰花150g',cal:55},{name:'玉米排骨汤(去油)',cal:100},{name:'清蒸带鱼80g',cal:90},{name:'素炒蘑菇150g',cal:45}],snacks:[{name:'苹果1个',cal:85},{name:'蓝莓100g',cal:57},{name:'猕猴桃1个',cal:55},{name:'小番茄200g',cal:40},{name:'坚果一小把(10g)',cal:58},{name:'柚子2瓣',cal:45},{name:'黄瓜1根',cal:30},{name:'无糖酸奶100g',cal:72},{name:'黑巧克力(85%)1块',cal:60},{name:'火龙果半个',cal:60},{name:'草莓200g',cal:64},{name:'梨1个',cal:95}]};
 const AVOID=[{name:'动物内脏',reason:'胆固醇极高'},{name:'油炸食品',reason:'反式脂肪酸'},{name:'肥肉',reason:'饱和脂肪过高'},{name:'含糖饮料',reason:'升高甘油三酯'},{name:'糕点甜点',reason:'高糖高油'},{name:'腌制食品',reason:'高盐伤肝'}];
-const KNOWLEDGE=[{title:'什么是脂肪肝？',content:'脂肪肝是指肝脏内脂肪堆积超过肝脏重量的5%。通过减重5%~10%，50%以上的脂肪肝可以逆转！'},{title:'高血脂饮食核心原则',content:'①减少饱和脂肪(动物油、肥肉)\n②增加可溶性膳食纤维(燕麦、豆类)\n③选择优质蛋白(鱼肉、鸡胸肉)\n④Omega-3脂肪酸(深海鱼、亚麻籽)\n⑤控制精制碳水(白米白面减半)'},{title:'为什么不能快速减肥？',content:'减肥速度过快(月减5kg以上)会导致大量脂肪酸涌入肝脏，反而加重脂肪肝。推荐温和可持续的减肥方案。'},{title:'最佳进餐顺序',content:'汤→蔬菜→肉/蛋→主食。先喝汤吃菜增加饱腹感，再摄入蛋白质，最后吃主食，可有效控制血糖和热量。'},{title:'喝多少水合适？',content:'每日1500~2000ml(约8杯水)。早起一杯温水、餐前一杯水都有助于减肥。'},{title:'睡眠与减肥',content:'睡眠不足会扰乱瘦素和饥饿素的分泌，让你食欲大增。每晚7~8小时优质睡眠，23点前入睡最有利于肝脏代谢。'},{title:'燃脂心率计算',content:'中等强度运动心率=(220-年龄)×60%~70%。例如30岁的人，运动心率维持在114~133次/分。'}];
-const TIPS=['先吃蔬菜再吃主食，血糖更平稳','饭前喝300ml水，减少食量','每口饭咀嚼20次','白米饭换杂粮饭','晚餐在睡前3小时完成','每天快走30分钟改善脂肪肝','用水果替代甜点','深蹲是最好的燃脂动作','每周测一次腰围','鱼肉比红肉更适合高血脂人群','熬夜会让食欲增加15%~20%','压力大会导致腹部脂肪堆积','少吃1勺油=少摄入120千卡','买食品看营养成分表'];
+const RECIPES=[{name:'减脂早餐杯',meal:'breakfast',ingredients:['燕麦30g','无糖酸奶100g','蓝莓50g','坚果碎5g'],cal:260,prep:'隔夜燕麦做法：晚上将燕麦+酸奶拌匀放冰箱，早上加蓝莓和坚果。'},{name:'鸡胸肉沙拉',meal:'lunch',ingredients:['鸡胸肉100g','生菜100g','小番茄50g','玉米粒30g','油醋汁'],cal:290,prep:'鸡胸肉少油煎熟切片，蔬菜洗净拌匀即可。'},{name:'番茄龙利鱼汤',meal:'dinner',ingredients:['龙利鱼150g','番茄2个','豆腐100g','葱姜'],cal:220,prep:'番茄炒出汁加水烧开，放入鱼片和豆腐煮5分钟。'},{name:'杂粮饭配清蒸鱼',meal:'lunch',ingredients:['糙米+小米50g','鲈鱼150g','姜丝','葱段'],cal:320,prep:'鱼处理好放葱姜蒸8分钟，杂粮饭提前泡30分钟。'},{name:'蔬菜蛋花汤+蒸南瓜',meal:'dinner',ingredients:['鸡蛋1个','菠菜100g','南瓜200g'],cal:180,prep:'南瓜蒸20分钟，菠菜蛋花汤少油少盐。'},{name:'牛油果三明治',meal:'breakfast',ingredients:['全麦面包2片','牛油果半个','水煮蛋1个','黑胡椒'],cal:310,prep:'牛油果压成泥抹在面包上，水煮蛋切片夹入。'},{name:'香菇鸡丁糙米饭',meal:'lunch',ingredients:['鸡胸肉80g','香菇3朵','糙米50g','胡萝卜30g'],cal:340,prep:'鸡丁香菇炒香，加糙米和水焖煮20分钟。'}];
+const KNOWLEDGE=[{title:'什么是脂肪肝？',content:'脂肪肝是指肝脏内脂肪堆积超过肝脏重量的5%。通过减重5%~10%，50%以上的脂肪肝可以逆转！轻度脂肪肝往往没有症状，体检B超才发现。'},{title:'高血脂饮食核心原则',content:'①减少饱和脂肪(动物油、肥肉)\n②增加可溶性膳食纤维(燕麦、豆类)\n③选择优质蛋白(鱼肉、鸡胸肉)\n④Omega-3脂肪酸(深海鱼、亚麻籽)\n⑤控制精制碳水(白米白面减半)'},{title:'为什么不能快速减肥？',content:'减肥速度过快(月减5kg以上)会导致大量脂肪酸涌入肝脏，反而加重脂肪肝。推荐温和可持续的减肥方案，每周减0.5~1kg最安全。'},{title:'最佳进餐顺序',content:'汤→蔬菜→肉/蛋→主食。先喝汤吃菜增加饱腹感，再摄入蛋白质，最后吃主食，可有效控制血糖和热量。这样吃能自然减少20%~30%的热量摄入。'},{title:'喝多少水合适？',content:'每日1500~2000ml(约8杯水)。早起一杯温水促进代谢，餐前一杯水减少食量。也可以喝淡茶，但避免含糖饮料。'},{title:'睡眠与减肥',content:'睡眠不足会扰乱瘦素和饥饿素的分泌，让你食欲大增。每晚7~8小时优质睡眠，23点前入睡最有利于肝脏代谢。睡眠质量直接影响第二天热量摄入。'},{title:'燃脂心率',content:'中等强度运动心率=(220-年龄)×60%~70%。例如30岁的人，运动心率维持在114~133次/分。运动时微喘但能说话就是合适强度。'},{title:'脂肪肝分几级？',content:'脂肪肝分三级：轻度(脂肪占肝重5%~10%)、中度(10%~25%)、重度(>25%)。轻度通过饮食运动可完全逆转，中度需要严格控制，重度可能引发肝硬化。'},{title:'甘油三酯高怎么办？',content:'甘油三酯是血脂四项中最受饮食影响的指标。减少精制碳水和糖摄入，戒酒，增加Omega-3脂肪酸(三文鱼、鲭鱼、亚麻籽)，多运动。'},{title:'高密度脂蛋白(HDL)怎么提高？',content:'HDL是好胆固醇，有助清除血管垃圾。提高方法：规律有氧运动(每周150分钟)、适量坚果、橄榄油、深海鱼、不吸烟。'},{title:'低密度脂蛋白(LDL)怎么降低？',content:'LDL是坏胆固醇，降低方法：减少饱和脂肪、增加膳食纤维(每天25~30g)、补充植物固醇(豆制品)、每天吃点燕麦。'},{title:'每天该吃多少蛋白？',content:'减脂期建议每公斤体重1.2~1.8g蛋白质。60kg的人每天72~108g。早餐吃蛋、午晚餐吃鱼/鸡/豆制品。蛋白分配在三餐最有效。'},{title:'粗粮和细粮怎么搭配？',content:'建议粗细搭配，每餐粗粮占1/3~1/2。白米饭加一把糙米/燕麦/杂豆，既能控制血糖又增加饱腹感。从少到多逐步替换。'},{title:'运动前要吃东西吗？',content:'运动前1~2小时可以吃少量易消化碳水，如半根香蕉、一片全麦面包。避免饭后立即运动，也不要空腹高强度运动。'},{title:'如何正确测量体重？',content:'建议每周测1~2次，早上排尿后空腹称，穿同样衣服。同一天内波动2~3kg正常，不要频繁称体重造成焦虑。'},{title:'酒精对减肥的影响',content:'1g酒精含7千卡热量，且肝脏代谢酒精时会暂停脂肪燃烧。减脂期最好戒酒，尤其是啤酒(液体面包)。如果一定要喝，红酒不超过一小杯。'},{title:'喝水时间表',content:'07:00 起床温水300ml\n09:00 工作茶歇200ml\n11:00 餐前200ml\n13:00 餐后200ml\n15:00 下午茶200ml\n17:00 晚餐前200ml\n20:00 运动补水200ml\n22:00 睡前少量100ml'},{title:'常用调味品热量',content:'一勺油(15ml)=120千卡\n一勺糖(15g)=60千卡\n一勺沙拉酱(15g)=75千卡\n一勺花生酱(15g)=90千卡\n优先选择：醋、柠檬汁、黑胡椒、酱油(少放)'},{title:'减肥平台期怎么办？',content:'减脂3~4周后体重停滞是正常的，身体在适应新代谢。应对方法：①调整碳水/蛋白质比例 ②改变运动方式 ③增加高强度间歇训练 ④保证充足睡眠 ⑤不要让自己太饿'},{title:'瘦子也会有脂肪肝吗？',content:'会。瘦素型脂肪肝约占20%，常见于：①快速减肥后反弹 ②蛋白质摄入不足 ③果糖摄入过多(含糖饮料) ④遗传因素。瘦不代表肝脏健康。'}];
+const TIPS=['先吃蔬菜再吃主食，血糖更平稳','饭前喝300ml水，减少食量','每口饭咀嚼20次','白米饭换杂粮饭','晚餐在睡前3小时完成','每天快走30分钟改善脂肪肝','用水果替代甜点','深蹲是最好的燃脂动作','每周测一次腰围','鱼肉比红肉更适合高血脂人群','熬夜会让食欲增加15%~20%','压力大会导致腹部脂肪堆积','少吃1勺油=少摄入120千卡','买食品看营养成分表','喝咖啡不加糖不加奶精','选低脂奶代替全脂奶','多吃菌菇类食物','每天吃够500g蔬菜','不吃肥肉和动物皮','做菜多用蒸煮焯炖','少喝汤上的浮油','饭后散步15分钟','备好健康零食防暴食','细嚼慢咽每口20次','用小的餐具减少分量','不囤积不健康食物','每周吃2次深海鱼','每天晒太阳15分钟补维D','久坐每小时起来活动5分钟'];
 // ===== STATE =====
 let currentPage='home',selectedGender='female',selectedConditions=[],isInit=false,notifInt=null,audioCtx=null;
 let dailyRecord=null,currentModeId='gentle';
 // ===== PERSISTENCE (in-memory + localStorage) =====
 function persist(key,val){try{localStorage.setItem('soso_'+key,JSON.stringify(val))}catch(e){}}
 function load(key,def){try{const v=localStorage.getItem('soso_'+key);return v?JSON.parse(v):def}catch(e){return def}}
+// ===== OFFLINE DETECTION =====
+function updateOnlineStatus(){
+  const banner=document.getElementById('offlineBanner');
+  if(banner) banner.style.display=navigator.onLine?'none':'block';
+}
+window.addEventListener('online',updateOnlineStatus);
+window.addEventListener('offline',updateOnlineStatus);
 // ===== INIT =====
 document.addEventListener('DOMContentLoaded',()=>{
+  updateOnlineStatus();
   updateDate();setInterval(updateDate,60000);
   const p=load('profile',null);isInit=!!p;
   initTabBar();
@@ -293,6 +304,7 @@ function loadPage(page){
     case 'profile':html=renderProfile();break;
     case 'stats':html=renderStats();break;
     case 'knowledge':html=renderKnowledge();break;
+    case 'recipes':html=renderRecipes();break;
   }
   c.innerHTML=`<div class="page active">${html}</div>`;
   if(page==='welcome')initWelcome();
@@ -303,6 +315,7 @@ function loadPage(page){
   else if(page==='profile')initProfile();
   else if(page==='stats')initStats();
   else if(page==='knowledge')initKnowledge();
+  else if(page==='recipes')initRecipes();
 }
 // ===== RENDER: WELCOME =====
 function renderWelcome(){return`
@@ -618,6 +631,12 @@ function renderProfile(){
     <span style="color:var(--orange);font-size:18px;">→</span>
   </div>
 </div>
+<div class="card" style="cursor:pointer;" onclick="navigateTo('recipes')">
+  <div style="display:flex;align-items:center;justify-content:space-between;">
+    <div><h3 style="font-size:15px;font-weight:700;">🍳 推荐食谱</h3><p style="font-size:12px;color:var(--text-muted);">减脂餐·快手菜</p></div>
+    <span style="color:var(--orange);font-size:18px;">→</span>
+  </div>
+</div>
 <div class="card" style="cursor:pointer;" onclick="navigateTo('knowledge')">
   <div style="display:flex;align-items:center;justify-content:space-between;">
     <div><h3 style="font-size:15px;font-weight:700;">📖 健康百科</h3><p style="font-size:12px;color:var(--text-muted);">高血脂 · 脂肪肝知识</p></div>
@@ -678,7 +697,32 @@ ${KNOWLEDGE.map((k,i)=>`<div class="know-item" onclick="togKnow(${i})"><div clas
 `}
 function togKnow(i){document.querySelectorAll('.know-item')[i]?.classList.toggle('open')}
 function initKnowledge(){}
-// ===== UTILITIES =====
+// ===== RENDER: RECIPES =====
+function renderRecipes(){
+  const m=MODES[load('mode','gentle')];const mealTypes=[{id:'breakfast',icon:'☀️',label:'早餐'},{id:'lunch',icon:'🌤️',label:'午餐'},{id:'dinner',icon:'🌙',label:'晚餐'}];
+  let html=`<div class="card card-glow" style="background:linear-gradient(135deg,rgba(0,184,148,.1),rgba(255,107,53,.05));border:1px solid rgba(0,184,148,.1);">
+    <h3 style="font-size:17px;font-weight:700;">🍳 减脂食谱大全</h3>
+    <p style="font-size:13px;color:var(--text-sec);margin-top:4px;">${RECIPES.length}道健康快手菜 · 每道都标注热量</p>
+  </div>`;
+  mealTypes.forEach(mt=>{
+    const meals=RECIPES.filter(r=>r.meal===mt.id);
+    html+=`<div class="card"><h3 style="font-size:15px;font-weight:700;margin-bottom:10px;">${mt.icon} ${mt.label}推荐</h3>`;
+    meals.forEach((r,i)=>{
+      html+=`<div class="know-item" onclick="document.querySelectorAll('#recipeBody${mt.id}')[${i}]?.classList.toggle('open')">
+        <div class="ki-title"><span>${r.name} <span class="tag tag-green" style="font-size:10px;">${r.cal}kcal</span></span><span class="ki-arrow">▼</span></div>
+        <div class="ki-body" id="recipeBody${mt.id}${i}">
+          <div class="ki-text">📝 食材：${r.ingredients.join('、')}\n👨‍🍳 做法：${r.prep}</div>
+        </div>
+      </div>`;
+    });
+    html+=`</div>`;
+  });
+  html+=`<div class="card"><h3 style="font-size:15px;font-weight:700;margin-bottom:8px;">🥗 健康零食推荐</h3>`;
+  (FOOD_DB.snacks||[]).forEach(f=>html+=`<span class="food-chip">${f.name} <span class="fc-cal">${f.cal}kcal</span></span>`);
+  html+=`</div>`;
+  return html;
+}
+function initRecipes(){}
 function updateModeBadge(){
   const m=MODES[load('mode','gentle')];const b=document.getElementById('modeBadge');if(!b)return;
   b.className='mode-badge mode-'+m.id;const ic=b.querySelector('.mode-icon'),tx=b.querySelector('.mode-text');
